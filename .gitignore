@@ -1,4 +1,4 @@
-./.git
-./.idea
-./Project1/cifar-10-python
-./Project?/__pycache__
+.git
+.idea
+Project1/cifar-10-python
+Project?/__pycache__
