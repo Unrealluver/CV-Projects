@@ -4,15 +4,16 @@ import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from DataExtractor import *
 
-train_X, train_y, test_X, test_y = get_all_data()
-data_set_proportion = 0.01
-k_range = range(1, 101)
-k_acc = []
-#循环，取k=1到k=31，查看误差效果
-for k in k_range:
-    knn = KNeighborsClassifier(n_neighbors=k)
 
-    #cv参数决定数据集划分比例，这里是按照4:1划分训练集和测试集
+train_X, train_y, test_X, test_y = get_all_data()
+data_set_proportion = 1
+k_range = range(1, 21)
+k_acc = []
+
+
+for k in k_range:
+    knn = KNeighborsClassifier(n_neighbors=k, metric='cosine')
+
     scores = cross_val_score(knn, train_X[:int(data_set_proportion * train_X.shape[0]), :],
                              train_y[:int(data_set_proportion * train_y.shape[0])],
                              cv=5, scoring='accuracy')
