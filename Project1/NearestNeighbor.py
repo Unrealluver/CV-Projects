@@ -14,7 +14,7 @@ class NearestNeighbor:
         # Ypred = np.zeros(num_test, dtype = self.ytr[0].dtype)
 
         for i in range(num_test):
-            distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1)
+            distances = np.sum(np.abs(self.Xtr - X[i, :]), axis = 1)
             min_index = np.argmin(distances)
             Ypred[i] = self.ytr[min_index]
 
