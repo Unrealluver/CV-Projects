@@ -21,7 +21,7 @@ def draw_figure(x, y, x_label, y_label, title, save_dir=os.path.split(os.path.re
 
 train_X, train_y, test_X, test_y = get_all_data()
 metric_list = ["cosine", "euclidean", "manhattan", "chebyshev"]
-data_set_proportion = 0.001
+data_set_proportion = 1
 k_range_toplimit = 21
 k_range = range(1, k_range_toplimit)
 k_acc = []
