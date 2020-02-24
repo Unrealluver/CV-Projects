@@ -43,3 +43,4 @@ def get_all_data():
     test_X = batch_test.get(b'data')
     test_y = batch_test.get(b'labels')
     return train_X, train_y, test_X, test_y
+
