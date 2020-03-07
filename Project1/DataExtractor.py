@@ -1,7 +1,7 @@
 import numpy as np
 
 batch_list = []
-data_directory = "./cifar-10-python/cifar-10-batches-py/"
+data_directory = "../cifar-10-batches-py/"
 
 def unpickle(file):
     import pickle
