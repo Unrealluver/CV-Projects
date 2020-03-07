@@ -2,7 +2,9 @@ import numpy as np
 from sklearn import neighbors, datasets
 from DataExtractor import *
 from hog import *
+from time import *
 
+start = time()
 n_neighbors = 1
 metric = 'cosine'
 
@@ -22,4 +24,5 @@ for weights in ['uniform', 'distance']:
 
     print('final acc of KNN classifier with cosine distance metric, k=1 and wights = '
           + weights + 'is: ' + '%.2f%%' % (100 * (true / len(result))))
-
+end = time()
+print("total time cost is: " + (end - start).__str__())
