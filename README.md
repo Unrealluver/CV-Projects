@@ -15,3 +15,5 @@ CV-Projects for Digital Image Process Curriculum Design
 * 02/19/2020 Add the compatation of ACCURACY & TIME COST to the Project 1.
 * 03/01/2020 Add the preception training to Project2.
 * 03/08/2020 Add the softmax classifier to Project2.
+* 03/09/2020 Add the softmax module to Project 2.
+* 03/10/2020 Add the Sample & Normalized Part in DataExtractor.
