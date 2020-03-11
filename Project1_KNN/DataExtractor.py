@@ -111,3 +111,11 @@ def get_linear_data( num_training=49000, num_validation=1000, num_test=100, num_
     X_dev = np.hstack([X_dev, np.ones((X_dev.shape[0], 1))])
 
     return X_train, y_train, X_val, y_val, X_test, y_test, X_dev, y_dev
+
+def get_one_hot_label(labels, label_num):
+    one_hot_labels = []
+    for label in labels:
+        token = np.zeros(label_num)
+        token[label - 1] = 1
+        one_hot_labels.append(token)
+    return one_hot_labels

@@ -17,3 +17,4 @@ CV-Projects for Digital Image Process Curriculum Design
 * 03/08/2020 Add the softmax classifier to Project2.
 * 03/09/2020 Add the softmax module to Project 2.
 * 03/10/2020 Add the Sample & Normalized Part in DataExtractor.
+* 03/11/2020 Complete the Neural Network Part of Project 3.

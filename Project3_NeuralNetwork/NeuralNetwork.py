@@ -23,6 +23,7 @@ class FC:
     def update(self):
         self.W -= self.lr * (self.grad_W + self.regu_rate * self.W)
         self.b -= self.lr * self.grad_b
+        self.lr *= 0.99
 
 
 class Relu:
@@ -39,15 +40,18 @@ class Relu:
 class SparseSoftmaxCrossEntropy:
     def forward(self, X, y):
         self.X = X.copy()
+        # print("X's shape: ", np.shape(self.X))
         self.y = y.copy()
+        # print("y's shape: ", np.shape(self.y))
         denom = np.sum(np.exp(self.X), axis=1).reshape([-1, 1])
         self.softmax = np.exp(X) / denom
+        # print("softmax's shape: ", np.shape(self.softmax))
         cross_entropy = np.mean(-np.log(self.softmax[range(self.X.shape[0]), self.y]))
         return cross_entropy
 
     def backprop(self):
         m, n = self.X.shape
         activation_mat = np.zeros([m, n])
-        activation_mat[:, self.y] = 1
+        activation_mat[range(m), self.y] = 1
         grad = (self.softmax - activation_mat) / m
         return grad

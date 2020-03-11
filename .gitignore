@@ -1,5 +1,5 @@
 .git
 .idea
-Project?/__pycache__
+Project*/__pycache__
 
 ////Project1/cifar-10-python
