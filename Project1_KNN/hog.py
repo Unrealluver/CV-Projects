@@ -1,10 +1,5 @@
 from typing import List, Any
-
-import matplotlib.pyplot as plt
-
 from skimage.feature import hog
-from skimage import data, exposure
-import numpy as np
 from DataExtractor import *
 from tqdm import tqdm
 

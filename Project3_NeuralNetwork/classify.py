@@ -1,13 +1,21 @@
 from DataExtractor import *
 from NeuralNetwork import *
+from FigureDrawer import *
 import numpy as np
 from hog import *
 import math
+import os
 
-train_X, train_y, test_X, test_y = get_all_data()
+plt_path = os.path.abspath('.') + "/plt/"
+print('plt_path : ', plt_path)
+# origin data may lead to nearly random effect,
+# gradient is hard to descent, very hard to choose lr.
+# train_X, train_y, test_X, test_y = get_all_data()
+train_X, train_y, val_X, val_y, test_X, test_y, dev_X, dev_y = get_normalized_data()
+# check the training set.
+# print(train_X)
 
 # get the y matched 9 kinds of index(from 0 to 8)
-
 train_y -= np.ones(len(train_y), dtype=int)
 test_y -= np.ones(len(test_y), dtype=int)
 
@@ -35,11 +43,20 @@ b2 = np.zeros(int(image_size / 3 / 32))
 W3 = np.random.randn(int(image_size / 3 / 32), 9) / math.sqrt(int(image_size / 3 / 32))
 b3 = np.zeros(9)
 
+'''
+lr0.00005 + 0.99decay + 300epochs -> acc15.4% 
+lr0.00005 + 300epochs -> acc17.3%
+lr0.05 + 300epochs + normalize to (-1, 1) -> acc40.9%
+lr0.5 + 300epochs + normalize to (-1, 1) -> acc 40.2%
+lr0.5 + 1000epochs + normalize to (-1, 1) -> acc 41.3%
+'''
 # big lr selected warning: NaN -> exp overflow
-lr = 0.00000005
+lr = 0.5
+lr_decay = 0.999
 regu_rate = 0.001
 max_iter = 300
 loss_old = 9999999999999
+loss_history = []
 
 fc1 = FC(W1, b1, lr, regu_rate)
 relu1 = Relu()
@@ -56,8 +73,13 @@ for i in range(max_iter):
     h5 = fc3.forward(h4)
     # print("h5's contents: ", h5)
     loss = cross_entropy.forward(h5, train_y)
-    if loss_old < loss:
-        break
+    loss_history.append(loss)
+    # update lr to control the direction
+    if loss_old < loss and max_iter > 200:
+        fc1.update_lr(lr_decay)
+        fc2.update_lr(lr_decay)
+        fc3.update_lr(lr_decay)
+        print("lr changed to : ", str(fc1.get_lr()))
     loss_old = loss
     print("iter: {}, loss：{}".format(i + 1, loss))
 
@@ -80,4 +102,7 @@ valid_h5 = fc3.forward(valid_h4)
 valid_predict = np.argmax(valid_h5, 1)
 
 valid_acc = np.mean(valid_predict == valid_y)
-print('acc: ', valid_acc)
+print('acc: ', valid_acc.__str__())
+
+draw_figure(range(1, max_iter + 1), loss_history, 'iter', 'loss', 'lr' + lr.__str__(), save_dir=plt_path)
+

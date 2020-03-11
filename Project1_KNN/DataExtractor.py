@@ -45,7 +45,7 @@ def get_all_data():
     return train_X, train_y, test_X, test_y
 
 
-def get_linear_data( num_training=49000, num_validation=1000, num_test=100, num_dev=100):
+def get_normalized_data( num_training=49000, num_validation=1000, num_test=100, num_dev=100):
     """
     Load the CIFAR-10 dataset from disk and perform preprocessing to prepare
     it for the linear classifier.
@@ -104,11 +104,21 @@ def get_linear_data( num_training=49000, num_validation=1000, num_test=100, num_
     X_test -= mean_image
     X_dev -= mean_image
 
-    # add bias dimension and transform into columns
-    X_train = np.hstack([X_train, np.ones((X_train.shape[0], 1))])
-    X_val = np.hstack([X_val, np.ones((X_val.shape[0], 1))])
-    X_test = np.hstack([X_test, np.ones((X_test.shape[0], 1))])
-    X_dev = np.hstack([X_dev, np.ones((X_dev.shape[0], 1))])
+    X_train = np.array(X_train)
+    X_val = np.array(X_val)
+    X_test = np.array(X_test)
+    X_dev = np.array(X_dev)
+
+    X_train /= 128
+    X_val /= 128
+    X_test /= 128
+    X_dev /= 128
+
+    # # add bias dimension and transform into columns
+    # X_train = np.hstack([X_train, np.ones((X_train.shape[0], 1))])
+    # X_val = np.hstack([X_val, np.ones((X_val.shape[0], 1))])
+    # X_test = np.hstack([X_test, np.ones((X_test.shape[0], 1))])
+    # X_dev = np.hstack([X_dev, np.ones((X_dev.shape[0], 1))])
 
     return X_train, y_train, X_val, y_val, X_test, y_test, X_dev, y_dev
 

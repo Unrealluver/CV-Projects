@@ -1,13 +1,21 @@
 import numpy as np
 from math import *
 
-
 class FC:
     def __init__(self, W, b, lr, regu_rate):
         self.W = W.copy()
         self.b = b.copy()
         self.lr = lr
         self.regu_rate = regu_rate
+
+    def set_lr(self, lr):
+        self.lr = lr
+
+    def update_lr(self, proportion):
+        self.lr = proportion * self.lr
+
+    def get_lr(self):
+        return self.lr
 
     def forward(self, X):
         self.X = X.copy()
@@ -23,7 +31,7 @@ class FC:
     def update(self):
         self.W -= self.lr * (self.grad_W + self.regu_rate * self.W)
         self.b -= self.lr * self.grad_b
-        self.lr *= 0.99
+        # self.lr *= 0.99
 
 
 class Relu:
