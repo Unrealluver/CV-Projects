@@ -3,6 +3,7 @@ from NeuralNetwork import *
 import numpy as np
 from hog import *
 import math
+from Pca import *
 
 train_X, train_y, test_X, test_y = get_all_data()
 
@@ -23,6 +24,7 @@ valid_X = train_X[s_line:]
 valid_y = train_y[s_line:]
 
 train_X = train_X[:s_line]
+train_X = pca_process(train_X, 128)
 train_y = train_y[:s_line]
 
 image_size = train_X.shape[1]
