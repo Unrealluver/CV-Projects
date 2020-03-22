@@ -1,5 +1,6 @@
 .git
 .idea
+.vscode
 Project*/__pycache__
 
 ////Project1/cifar-10-python

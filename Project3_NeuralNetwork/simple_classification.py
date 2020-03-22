@@ -1,6 +1,7 @@
 __author__ = 'm.bashari'
 import numpy as np
 from sklearn import datasets, linear_model
+from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 from NeuralNetwork import *
 import math
@@ -39,9 +40,10 @@ def plot_decision_boundary(pred_func, X, y):
 
 def classify(X, y):
     # clf = linear_model.LogisticRegressionCV()
-    clf = nn_classifier()
+    clf = KNeighborsClassifier(metric='cosine')
+    # clf = nn_classifier()
     clf.fit(X, y)
-    clf.predict(X, y)
+    # clf.predict(X, y)
     return clf
 
 
@@ -117,7 +119,7 @@ def main():
     print("y's shape is : ", y.shape)
     # visualize(X, y)
     clf = classify(X, y)
-    # visualize(X, y, clf)
+    visualize(X, y, clf)
 
 
 if __name__ == "__main__":

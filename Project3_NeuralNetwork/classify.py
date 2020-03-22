@@ -5,6 +5,7 @@ import numpy as np
 from hog import *
 import math
 import os
+from Pca import *
 
 plt_path = os.path.abspath('.') + "/plt/"
 print('plt_path : ', plt_path)
@@ -23,8 +24,10 @@ test_y -= np.ones(len(test_y), dtype=int)
 # train_y = get_one_hot_label(train_y, 9)
 # test_y = get_one_hot_label(test_y, 9)
 
-# get hoged data
-# train_X, train_y, test_X, test_y = get_hog_data(train_X, train_y, test_X, test_y, orientations=9, pixels_per_cell=(4, 4), cells_per_block=(4, 4))
+# get hogged data
+train_X, train_y, test_X, test_y = get_hog_data(train_X, train_y, test_X, test_y, orientations=9, pixels_per_cell=(4, 4), cells_per_block=(4, 4))
+# PCA process
+train_X = pca_process(train_X, 864)
 
 s_line = int(0.7 * train_X.shape[0])
 valid_X = train_X[s_line:]
@@ -49,12 +52,17 @@ lr0.00005 + 300epochs -> acc17.3%
 lr0.05 + 300epochs + normalize to (-1, 1) -> acc40.9%
 lr0.5 + 300epochs + normalize to (-1, 1) -> acc 40.2%
 lr0.5 + 1000epochs + normalize to (-1, 1) -> acc 41.3%
+lr0.5 + 300epochs + normalize to (-1, 1) + PCA864 -> acc 42.6% : fig1
+lr0.5 + 300epochs + normalize to (-1, 1) + HOG -> acc39.5% : fig 2
+lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 -> acc48.8%
+lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 -> acc55.9%
+lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + twice decay(3500, 0.999->0.99)-> acc57.1%
 '''
 # big lr selected warning: NaN -> exp overflow
 lr = 0.5
 lr_decay = 0.999
 regu_rate = 0.001
-max_iter = 300
+max_iter = 5000
 loss_old = 9999999999999
 loss_history = []
 
@@ -75,12 +83,14 @@ for i in range(max_iter):
     loss = cross_entropy.forward(h5, train_y)
     loss_history.append(loss)
     # update lr to control the direction
-    if loss_old < loss and max_iter > 200:
+    if loss_old < loss and i > 200:
         fc1.update_lr(lr_decay)
         fc2.update_lr(lr_decay)
         fc3.update_lr(lr_decay)
         print("lr changed to : ", str(fc1.get_lr()))
-    loss_old = loss
+    if i > 3500:
+        lr_decay = 0.99
+
     print("iter: {}, loss：{}".format(i + 1, loss))
 
     grad_h5 = cross_entropy.backprop()
@@ -104,5 +114,7 @@ valid_predict = np.argmax(valid_h5, 1)
 valid_acc = np.mean(valid_predict == valid_y)
 print('acc: ', valid_acc.__str__())
 
-draw_figure(range(1, max_iter + 1), loss_history, 'iter', 'loss', 'lr' + lr.__str__(), save_dir=plt_path)
+draw_figure(range(1, max_iter + 1), loss_history, 'iter', 'loss',
+            'lr' + lr.__str__() + ' iter' + max_iter.__str__() + ' normalize to (-1, 1)' +
+            ' HOG' + ' pca' + ' twice decay', save_dir=plt_path)
 
