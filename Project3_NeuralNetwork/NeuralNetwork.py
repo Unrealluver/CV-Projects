@@ -2,11 +2,13 @@ import numpy as np
 from math import *
 
 class FC:
-    def __init__(self, W, b, lr, regu_rate):
+    def __init__(self, W, b, lr, regu_rate, optimizer):
         self.W = W.copy()
         self.b = b.copy()
         self.lr = lr
         self.regu_rate = regu_rate
+        if optimizer == 'SGD':
+            self.optimizer = SGD()
 
     def set_lr(self, lr):
         self.lr = lr
@@ -29,7 +31,8 @@ class FC:
         return self.grad
 
     def update(self):
-        self.W -= self.lr * (self.grad_W + self.regu_rate * self.W)
+        # self.W -= self.lr * (self.grad_W + self.regu_rate * self.W)
+        self.W = self.optimizer.update(weights=self.W, grads=self.grad_W, lr=self.lr, regu_rate=self.regu_rate)
         self.b -= self.lr * self.grad_b
         # self.lr *= 0.99
 
@@ -48,13 +51,14 @@ class Relu:
 class SparseSoftmaxCrossEntropy:
     def forward(self, X, y):
         self.X = X.copy()
-        # print("X's shape: ", np.shape(self.X))
+        print("X's shape: ", np.shape(self.X))
         self.y = y.copy()
-        # print("y's shape: ", np.shape(self.y))
+        print("y's shape: ", np.shape(self.y))
         denom = np.sum(np.exp(self.X), axis=1).reshape([-1, 1])
         self.softmax = np.exp(X) / denom
-        # print("softmax's shape: ", np.shape(self.softmax))
+        print("softmax's shape: ", np.shape(self.softmax))
         cross_entropy = np.mean(-np.log(self.softmax[range(self.X.shape[0]), self.y]))
+        print("cross_entropy's shape: ", np.shape(cross_entropy))
         return cross_entropy
 
     def backprop(self):
@@ -63,3 +67,21 @@ class SparseSoftmaxCrossEntropy:
         activation_mat[range(m), self.y] = 1
         grad = (self.softmax - activation_mat) / m
         return grad
+
+class SGD:
+    def update(self, weights, grads, lr, regu_rate):
+        weights -= lr * (grads + regu_rate * weights)
+        return weights
+
+class Momentum:
+    def __init__(self, momentum=0.9):
+        self.momentum = momentum
+        self.v = None
+
+    def update(self, weights, grads, lr, regu_rate):
+        if self.v is None:
+            self.v = np.zeros_like(weights)
+        self.v = self.momentum * self.v - lr * grads
+        weights += self.v
+
+

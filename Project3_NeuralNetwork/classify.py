@@ -25,9 +25,9 @@ test_y -= np.ones(len(test_y), dtype=int)
 # test_y = get_one_hot_label(test_y, 9)
 
 # get hogged data
-train_X, train_y, test_X, test_y = get_hog_data(train_X, train_y, test_X, test_y, orientations=9, pixels_per_cell=(4, 4), cells_per_block=(4, 4))
+# train_X, train_y, test_X, test_y = get_hog_data(train_X, train_y, test_X, test_y, orientations=9, pixels_per_cell=(4, 4), cells_per_block=(4, 4))
 # PCA process
-train_X = pca_process(train_X, 864)
+# train_X = pca_process(train_X, 864)
 
 s_line = int(0.7 * train_X.shape[0])
 valid_X = train_X[s_line:]
@@ -39,38 +39,43 @@ train_y = train_y[:s_line]
 image_size = train_X.shape[1]
 print("image size is : ", image_size)
 
-W1 = np.random.randn(image_size, int(image_size / 3)) / math.sqrt(image_size)
+# he for relu
+HeParam = 1
+W1 = np.random.randn(image_size, int(image_size / 3)) / math.sqrt(image_size/HeParam)
 b1 = np.zeros(int(image_size / 3))
-W2 = np.random.randn(int(image_size / 3), int(image_size / 3 / 32)) / math.sqrt(int(image_size / 3))
+W2 = np.random.randn(int(image_size / 3), int(image_size / 3 / 32)) / math.sqrt(int(image_size / 3 / HeParam))
 b2 = np.zeros(int(image_size / 3 / 32))
-W3 = np.random.randn(int(image_size / 3 / 32), 9) / math.sqrt(int(image_size / 3 / 32))
+W3 = np.random.randn(int(image_size / 3 / 32), 9) / math.sqrt(int(image_size / 3 / 32 / HeParam))
 b3 = np.zeros(9)
 
 '''
-lr0.00005 + 0.99decay + 300epochs -> acc15.4% 
-lr0.00005 + 300epochs -> acc17.3%
-lr0.05 + 300epochs + normalize to (-1, 1) -> acc40.9%
-lr0.5 + 300epochs + normalize to (-1, 1) -> acc 40.2%
-lr0.5 + 1000epochs + normalize to (-1, 1) -> acc 41.3%
-lr0.5 + 300epochs + normalize to (-1, 1) + PCA864 -> acc 42.6% : fig1
-lr0.5 + 300epochs + normalize to (-1, 1) + HOG -> acc39.5% : fig 2
-lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 -> acc48.8%
-lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 -> acc55.9%
-lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + twice decay(3500, 0.999->0.99)-> acc57.1%
+lr0.00005 + 0.99decay + 300epochs + He -> acc15.4% 
+lr0.00005 + 300epochs + He -> acc17.3%
+lr0.05 + 300epochs + normalize to (-1, 1) + He -> acc40.9%
+lr0.5 + 300epochs + normalize to (-1, 1) + He -> acc 40.2%
+lr0.5 + 300epochs + normalize to (-1, 1) + He -> acc 37.56%
+lr0.5 + 300epochs + normalize to (-1, 1) + He4relu -> acc 37.6% (lower loss decent rate)
+lr0.15 + 300epochs + normalize to (-1, 1) + He4relu -> acc 33.7%
+lr0.5 + 1000epochs + normalize to (-1, 1) + He -> acc 41.3%
+lr0.5 + 300epochs + normalize to (-1, 1) + PCA864 + He -> acc 42.6% : fig1
+lr0.5 + 300epochs + normalize to (-1, 1) + HOG + He -> acc39.5% : fig 2
+lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He-> acc48.8%
+lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He -> acc55.9%
+lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + twice decay(3500, 0.999->0.99) + He-> acc57.1%
 '''
 # big lr selected warning: NaN -> exp overflow
-lr = 0.5
+lr = 0.15
 lr_decay = 0.999
 regu_rate = 0.001
-max_iter = 5000
+max_iter = 300
 loss_old = 9999999999999
 loss_history = []
 
-fc1 = FC(W1, b1, lr, regu_rate)
+fc1 = FC(W1, b1, lr, regu_rate, 'SGD')
 relu1 = Relu()
-fc2 = FC(W2, b2, lr, regu_rate)
+fc2 = FC(W2, b2, lr, regu_rate, 'SGD')
 relu2 = Relu()
-fc3 = FC(W3, b3, lr, regu_rate)
+fc3 = FC(W3, b3, lr, regu_rate, 'SGD')
 cross_entropy = SparseSoftmaxCrossEntropy()
 
 for i in range(max_iter):
@@ -83,7 +88,7 @@ for i in range(max_iter):
     loss = cross_entropy.forward(h5, train_y)
     loss_history.append(loss)
     # update lr to control the direction
-    if loss_old < loss and i > 200:
+    if loss_old < loss and i > 300:
         fc1.update_lr(lr_decay)
         fc2.update_lr(lr_decay)
         fc3.update_lr(lr_decay)
@@ -116,5 +121,5 @@ print('acc: ', valid_acc.__str__())
 
 draw_figure(range(1, max_iter + 1), loss_history, 'iter', 'loss',
             'lr' + lr.__str__() + ' iter' + max_iter.__str__() + ' normalize to (-1, 1)' +
-            ' HOG' + ' pca' + ' twice decay', save_dir=plt_path)
+            ' HOG' + ' pca' + ' twice decay' + ' He', save_dir=plt_path)
 
