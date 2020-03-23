@@ -40,7 +40,7 @@ image_size = train_X.shape[1]
 print("image size is : ", image_size)
 
 # he for relu
-HeParam = 1
+HeParam = 2
 W1 = np.random.randn(image_size, int(image_size / 3)) / math.sqrt(image_size/HeParam)
 b1 = np.zeros(int(image_size / 3))
 W2 = np.random.randn(int(image_size / 3), int(image_size / 3 / 32)) / math.sqrt(int(image_size / 3 / HeParam))
@@ -53,12 +53,14 @@ lr0.00005 + 0.99decay + 300epochs + He -> acc15.4%
 lr0.00005 + 300epochs + He -> acc17.3%
 lr0.05 + 300epochs + normalize to (-1, 1) + He -> acc40.9%
 lr0.5 + 300epochs + normalize to (-1, 1) + He -> acc 40.2%
-lr0.5 + 300epochs + normalize to (-1, 1) + He -> acc 37.56%
-lr0.5 + 300epochs + normalize to (-1, 1) + He4relu -> acc 37.6% (lower loss decent rate)
-lr0.15 + 300epochs + normalize to (-1, 1) + He4relu -> acc 33.7%
+lr0.5 + 300epochs + normalize to (-1, 1) + He + PCA864 -> acc 37.56%
+lr0.5 + 300epochs + normalize to (-1, 1) + He4relu + PCA864 -> acc 37.6% (lower loss decent rate)
+lr0.15 + 300epochs + normalize to (-1, 1) + He4relu + PCA864 -> acc 33.7%
 lr0.5 + 1000epochs + normalize to (-1, 1) + He -> acc 41.3%
 lr0.5 + 300epochs + normalize to (-1, 1) + PCA864 + He -> acc 42.6% : fig1
 lr0.5 + 300epochs + normalize to (-1, 1) + HOG + He -> acc39.5% : fig 2
+lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He -> acc37.1%
+lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He -> acc37.8%
 lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He-> acc48.8%
 lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He -> acc55.9%
 lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + twice decay(3500, 0.999->0.99) + He-> acc57.1%
@@ -67,15 +69,16 @@ lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + twice decay(3500, 0.9
 lr = 0.15
 lr_decay = 0.999
 regu_rate = 0.001
-max_iter = 300
+max_iter = 5000
 loss_old = 9999999999999
 loss_history = []
+optimizer = 'Momentum'
 
-fc1 = FC(W1, b1, lr, regu_rate, 'SGD')
+fc1 = FC(W1, b1, lr, regu_rate, optimizer)
 relu1 = Relu()
-fc2 = FC(W2, b2, lr, regu_rate, 'SGD')
+fc2 = FC(W2, b2, lr, regu_rate, optimizer)
 relu2 = Relu()
-fc3 = FC(W3, b3, lr, regu_rate, 'SGD')
+fc3 = FC(W3, b3, lr, regu_rate, optimizer)
 cross_entropy = SparseSoftmaxCrossEntropy()
 
 for i in range(max_iter):
@@ -88,7 +91,7 @@ for i in range(max_iter):
     loss = cross_entropy.forward(h5, train_y)
     loss_history.append(loss)
     # update lr to control the direction
-    if loss_old < loss and i > 300:
+    if loss_old < loss and i > 200:
         fc1.update_lr(lr_decay)
         fc2.update_lr(lr_decay)
         fc3.update_lr(lr_decay)
@@ -121,5 +124,5 @@ print('acc: ', valid_acc.__str__())
 
 draw_figure(range(1, max_iter + 1), loss_history, 'iter', 'loss',
             'lr' + lr.__str__() + ' iter' + max_iter.__str__() + ' normalize to (-1, 1)' +
-            ' HOG' + ' pca' + ' twice decay' + ' He', save_dir=plt_path)
+            ' HOG' + ' pca' + ' twice decay' + ' He4Relu' + ' Momentum', save_dir=plt_path)
 

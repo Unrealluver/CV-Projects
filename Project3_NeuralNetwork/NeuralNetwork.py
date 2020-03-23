@@ -9,6 +9,8 @@ class FC:
         self.regu_rate = regu_rate
         if optimizer == 'SGD':
             self.optimizer = SGD()
+        elif optimizer == 'Momentum':
+            self.optimizer = Momentum()
 
     def set_lr(self, lr):
         self.lr = lr
@@ -51,14 +53,14 @@ class Relu:
 class SparseSoftmaxCrossEntropy:
     def forward(self, X, y):
         self.X = X.copy()
-        print("X's shape: ", np.shape(self.X))
+        # print("X's shape: ", np.shape(self.X))
         self.y = y.copy()
-        print("y's shape: ", np.shape(self.y))
+        # print("y's shape: ", np.shape(self.y))
         denom = np.sum(np.exp(self.X), axis=1).reshape([-1, 1])
         self.softmax = np.exp(X) / denom
-        print("softmax's shape: ", np.shape(self.softmax))
+        # print("softmax's shape: ", np.shape(self.softmax))
         cross_entropy = np.mean(-np.log(self.softmax[range(self.X.shape[0]), self.y]))
-        print("cross_entropy's shape: ", np.shape(cross_entropy))
+        # print("cross_entropy's shape: ", np.shape(cross_entropy))
         return cross_entropy
 
     def backprop(self):
@@ -82,6 +84,9 @@ class Momentum:
         if self.v is None:
             self.v = np.zeros_like(weights)
         self.v = self.momentum * self.v - lr * grads
+        # print("grads' shape: ", np.shape(grads))
+        # print("weights' shape: ", np.shape(weights))
+        # print("v's shape: ", np.shape(self.v))
         weights += self.v
-
+        return weights
 
