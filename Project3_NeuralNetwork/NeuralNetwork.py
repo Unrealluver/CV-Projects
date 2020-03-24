@@ -11,6 +11,8 @@ class FC:
             self.optimizer = SGD()
         elif optimizer == 'Momentum':
             self.optimizer = Momentum()
+        elif optimizer == 'AdaGrad':
+            self.optimizer = AdaGrad()
 
     def set_lr(self, lr):
         self.lr = lr
@@ -90,3 +92,13 @@ class Momentum:
         weights += self.v
         return weights
 
+class AdaGrad:
+    def __init__(self):
+        self.h = None
+
+    def update(self, weights, grads, lr, regu_rate):
+        if self.h is None:
+            self.h = np.zeros_like(weights)
+        self.h = grads * grads
+        weights -= lr * grads / (np.sqrt(self.h) + 1e-7)
+        return weights

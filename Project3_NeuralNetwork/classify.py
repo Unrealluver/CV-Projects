@@ -25,9 +25,9 @@ test_y -= np.ones(len(test_y), dtype=int)
 # test_y = get_one_hot_label(test_y, 9)
 
 # get hogged data
-# train_X, train_y, test_X, test_y = get_hog_data(train_X, train_y, test_X, test_y, orientations=9, pixels_per_cell=(4, 4), cells_per_block=(4, 4))
+train_X, train_y, test_X, test_y = get_hog_data(train_X, train_y, test_X, test_y, orientations=9, pixels_per_cell=(4, 4), cells_per_block=(4, 4))
 # PCA process
-# train_X = pca_process(train_X, 864)
+train_X = pca_process(train_X, 864)
 
 s_line = int(0.7 * train_X.shape[0])
 valid_X = train_X[s_line:]
@@ -64,15 +64,16 @@ lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He -> acc
 lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He-> acc48.8%
 lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He -> acc55.9%
 lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + twice decay(3500, 0.999->0.99) + He-> acc57.1%
+lr0.0015 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + he4relu + AdaGrad -> 50.8%
 '''
 # big lr selected warning: NaN -> exp overflow
-lr = 0.15
+lr = 0.0015
 lr_decay = 0.999
 regu_rate = 0.001
 max_iter = 5000
 loss_old = 9999999999999
 loss_history = []
-optimizer = 'Momentum'
+optimizer = 'AdaGrad'
 
 fc1 = FC(W1, b1, lr, regu_rate, optimizer)
 relu1 = Relu()
@@ -124,5 +125,5 @@ print('acc: ', valid_acc.__str__())
 
 draw_figure(range(1, max_iter + 1), loss_history, 'iter', 'loss',
             'lr' + lr.__str__() + ' iter' + max_iter.__str__() + ' normalize to (-1, 1)' +
-            ' HOG' + ' pca' + ' twice decay' + ' He4Relu' + ' Momentum', save_dir=plt_path)
+            ' HOG' + ' pca' + ' He4Relu' + ' AdaGrad', save_dir=plt_path)
 
