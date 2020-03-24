@@ -39,14 +39,14 @@ train_y = train_y[:s_line]
 image_size = train_X.shape[1]
 print("image size is : ", image_size)
 
-# he for relu
+# he for relu : 2
 HeParam = 2
 W1 = np.random.randn(image_size, int(image_size / 3)) / math.sqrt(image_size/HeParam)
 b1 = np.zeros(int(image_size / 3))
 W2 = np.random.randn(int(image_size / 3), int(image_size / 3 / 32)) / math.sqrt(int(image_size / 3 / HeParam))
 b2 = np.zeros(int(image_size / 3 / 32))
-W3 = np.random.randn(int(image_size / 3 / 32), 9) / math.sqrt(int(image_size / 3 / 32 / HeParam))
-b3 = np.zeros(9)
+W3 = np.random.randn(int(image_size / 3 / 32), 10) / math.sqrt(int(image_size / 3 / 32 / HeParam))
+b3 = np.zeros(10)
 
 '''
 lr0.00005 + 0.99decay + 300epochs + He -> acc15.4% 
@@ -65,13 +65,14 @@ lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He-> acc4
 lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He -> acc55.9%
 lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + twice decay(3500, 0.999->0.99) + He-> acc57.1%
 lr0.0015 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + he4relu + AdaGrad -> 50.8%
+lr0.0015 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + he4relu + AdaGrad -> 50.1%
 lr0.0015 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + he4relu + AdaGrad -> 60.7%
 '''
 # big lr selected warning: NaN -> exp overflow
 lr = 0.0015
 lr_decay = 0.999
 regu_rate = 0.001
-max_iter = 5000
+max_iter = 1000
 loss_old = 9999999999999
 loss_history = []
 optimizer = 'AdaGrad'

@@ -51,6 +51,20 @@ class Relu:
         grad[self.X < 0] = 0
         return grad
 
+class Sigmoid:
+    def forward(self, X):
+        out = sigmoid(X)
+        self.out = out
+        return out
+
+    def backprop(self, back_grad):
+        dx = back_grad * (1.0 - self.out) * self.out
+        return dx
+
+
+def sigmoid(X):
+    return 1 / (1 + np.exp(-X))
+
 
 class SparseSoftmaxCrossEntropy:
     def forward(self, X, y):
