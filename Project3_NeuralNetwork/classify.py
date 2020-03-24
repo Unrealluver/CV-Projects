@@ -65,6 +65,7 @@ lr0.5 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He-> acc4
 lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + decay0.999 + He -> acc55.9%
 lr0.5 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + twice decay(3500, 0.999->0.99) + He-> acc57.1%
 lr0.0015 + 300epochs + normalize to (-1, 1) + HOG + PCA864 + he4relu + AdaGrad -> 50.8%
+lr0.0015 + 5000epochs + normalize to (-1, 1) + HOG + PCA864 + he4relu + AdaGrad -> 60.7%
 '''
 # big lr selected warning: NaN -> exp overflow
 lr = 0.0015
