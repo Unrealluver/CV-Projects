@@ -14,9 +14,9 @@ def generate_data():
 
 
 def visualize(X, y, clf):
-    # plt.scatter(X[:, 0], X[:, 1], s=40, c=y, cmap=plt.cm.Spectral)
+    plt.scatter(X[:, 0], X[:, 1], s=40, c=y, cmap=plt.cm.Spectral)
     # plt.show()
-    plot_decision_boundary(lambda x: clf.predict(x), X, y)
+    # plot_decision_boundary(lambda x: clf.predict(x), X, y)
     plt.title("Logistic Regression")
 
 
@@ -40,10 +40,10 @@ def plot_decision_boundary(pred_func, X, y):
 
 def classify(X, y):
     # clf = linear_model.LogisticRegressionCV()
-    clf = KNeighborsClassifier(metric='cosine')
-    # clf = nn_classifier()
+    # clf = KNeighborsClassifier(metric='cosine')
+    clf = nn_classifier()
     clf.fit(X, y)
-    # clf.predict(X, y)
+    clf.predict(X, y)
     return clf
 
 

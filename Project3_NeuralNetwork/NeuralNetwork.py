@@ -2,7 +2,7 @@ import numpy as np
 from math import *
 
 class FC:
-    def __init__(self, W, b, lr, regu_rate, optimizer):
+    def __init__(self, W, b, lr, regu_rate, optimizer='SGD'):
         self.W = W.copy()
         self.b = b.copy()
         self.lr = lr
@@ -116,3 +116,21 @@ class AdaGrad:
         self.h = grads * grads
         weights -= lr * grads / (np.sqrt(self.h) + 1e-7)
         return weights
+
+
+class Dropout:
+    # http://arxiv.org/abs/1207.0580
+    def __init__(self, dropout_ratio=0.5):
+        self.dropout_ratio = dropout_ratio
+        self.mask = None
+
+    def forward(self, x, train_flg=True):
+        if train_flg:
+            self.mask = np.random.rand(*x.shape) > self.dropout_ratio
+            return x * self.mask
+        else:
+            return x * (1.0 - self.dropout_ratio)
+
+    def backward(self, dout):
+        return dout * self.mask
+
