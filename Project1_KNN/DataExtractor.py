@@ -202,11 +202,11 @@ def get_CIFAR10_data(path_to_cifar_dir='../cifar-10-batches-py',
     # print("X_train[0]'s shape", np.shape(X_train[0]))
     # print(y_train[0])
     # Normalize the data: subtract the mean image
-    # if subtract_mean:
-    #     mean_image = np.mean(X_train, axis=0)
-    #     X_train -= mean_image
-    #     X_val -= mean_image
-    #     X_test -= mean_image
+    if subtract_mean:
+        mean_image = np.mean(X_train, axis=0)
+        X_train -= mean_image
+        X_val -= mean_image
+        X_test -= mean_image
 
     # fig = plt.figure()
     # plt.imshow(X_train[0])

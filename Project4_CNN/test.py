@@ -60,6 +60,7 @@ lr = 0.003 adam epoch = 5 -> 62.4% acc
 lr = 0.0003 adam epoch = 5 -> 65.7% acc
 lr = 0.0001 adam epoch = 5 -> 65.6% acc
 lr = 0.0001 adam epoch = 10 tbs128/32 -> 68.8% acc
+lr = 0.0001 adam epoch = 10 tbs256/64 -> 68.3% acc
 '''
 def main ():
     train_batch_size = 256
@@ -90,17 +91,19 @@ def main ():
         acc_matrix.append(acc_list)
 
     # jittor core var
-    np.save("./lm.npy", np.array(loss_matrix))
-    np.save("./am.npy", np.array(acc_matrix))
-    draw_error_bar(loss_matrix, 'loss', 'epoch', 'lr=' + learning_rate.__str__()
+    # np.save("./lm.npy", np.array(loss_matrix))
+    # np.save("./am.npy", np.array(acc_matrix))
+    draw_error_bar(loss_matrix, 'epoch', 'loss', 'lr=' + learning_rate.__str__()
                    + " optimizer=" + optimizerID + " epochs=" + epochs.__str__()
                    + "train_batch_size" + train_batch_size.__str__()
                    + "test_batch_size" + test_batch_size.__str__()
+                   # + "conv 64/128"
                    , save_dir=plt_path)
-    draw_error_bar(acc_matrix, 'acc', 'epoch', 'lr=' + learning_rate.__str__()
+    draw_error_bar(acc_matrix, 'epoch', 'acc', 'lr=' + learning_rate.__str__()
                    + " optimizer=" + optimizerID + " epochs=" + epochs.__str__()
                    + "train_batch_size" + train_batch_size.__str__()
                    + "test_batch_size" + test_batch_size.__str__()
+                   # + "conv 64/128"
                    , save_dir=plt_path)
 
 if __name__ == '__main__':

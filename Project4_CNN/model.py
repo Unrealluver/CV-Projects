@@ -15,8 +15,8 @@ class Model (Module):
 
         self.max_pool = nn.Pool (2, 2)
         self.relu = nn.Relu()
-        self.fc1 = nn.Linear (64 * 14 * 14, 256)
-        self.fc2 = nn.Linear (256, 10)
+        self.fc1 = nn.Linear (64*14*14, 1024)
+        self.fc2 = nn.Linear (1024, 10)
     def execute (self, x) :
         x = self.conv1 (x)
         x = self.relu (x)
