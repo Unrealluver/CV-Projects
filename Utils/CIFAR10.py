@@ -48,8 +48,9 @@ class CIFAR10(Dataset):
     def __getitem__(self, index):
         # print("Image Process' shape: ", np.shape(self.cifar10['images'][index]))
         # img = Image.fromarray(self.cifar10['images'][index]).convert('RGB')
-        # img = Image.fromarray(self.cifar10['images'][index], mode='RGB')
-        img = self.cifar10['images'][index]
+        # img = Image.fromarray(np.uint8(self.cifar10['images'][index]), mode='RGB')
+        img = Image.fromarray(np.uint8(self.cifar10['images'][index]))
+        # img = self.cifar10['images'][index]
         # img = Image.fromarray(np.transpose(self.cifar10['images'][index], (1, 2, 0)), mode='RGB')
         # print("img's shape: ", np.shape(img))
         if self.transform:

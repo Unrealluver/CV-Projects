@@ -43,9 +43,15 @@ def val(model, val_loader, epoch):
 
 
 
+'''
+lr = 0.1 loss dont descent, too large
+lr = 0.03 loss dont descent, too large
+lr = 0.01 65%acc
+lr = 0.003
+'''
 def main ():
     batch_size = 32
-    learning_rate = 1e-6
+    learning_rate = 0.003
     momentum = 0.9
     weight_decay = 1e-4
     epochs = 5

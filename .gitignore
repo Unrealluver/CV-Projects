@@ -3,4 +3,5 @@
 .vscode
 Project*/__pycache__
 
+/Project4_CNN/mnistclassification-jittor/
 ////Project1/cifar-10-python
