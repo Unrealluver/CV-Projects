@@ -1,7 +1,5 @@
-from DataExtractor import *
 from NeuralNetwork import *
-from FigureDrawer import *
-import numpy as np
+from FigureDrawerUtil import *
 from hog import *
 import math
 import os

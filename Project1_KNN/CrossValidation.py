@@ -1,11 +1,8 @@
 from sklearn.model_selection import cross_val_score
-import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
-from DataExtractor import *
 from time import *
 from hog import *
-import os
-from FigureDrawer import *
+from FigureDrawerUtil import *
 
 train_X, train_y, test_X, test_y = get_all_data()
 train_X, train_y, test_X, test_y = get_hog_data(train_X, train_y, test_X, test_y)
