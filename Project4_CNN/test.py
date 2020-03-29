@@ -9,6 +9,8 @@ from model import Model
 import jittor.transform as trans
 from CIFAR10 import *
 from ErrorBarUtil import *
+from vgg_16 import VGG_16
+from vgg_11 import VGG_11
 
 jt.flags.use_cuda = 0 # if jt.flags.use_cuda = 1 will use gpu
 
@@ -17,6 +19,7 @@ def train(model, train_loader, optimizer, epoch):
     loss_list = []
     for batch_idx, (inputs, targets) in enumerate(train_loader):
         outputs = model(inputs)
+        # print("outputs & targets' shape: ", np.shape(outputs), np.shape(targets))
         loss = nn.cross_entropy_loss(outputs, targets)
         loss_list.append(loss.data)
         optimizer.step (loss)
@@ -61,14 +64,17 @@ lr = 0.0003 adam epoch = 5 -> 65.7% acc
 lr = 0.0001 adam epoch = 5 -> 65.6% acc
 lr = 0.0001 adam epoch = 10 tbs128/32 -> 68.8% acc
 lr = 0.0001 adam epoch = 10 tbs256/64 -> 68.3% acc
+lr = 0.0001 adam epoch = 10 tbs256/64 vgg11 -> 58.9% acc
+lr = 0.0003 optimizer=adam epochs=10train_batch_size256test_batch_size64 vgg11 -> 68.9%
+lr = 0.0003 adam epoch = 10 tbs256/64 vgg16 -> 62.8%acc
 '''
 def main ():
     train_batch_size = 256
     test_batch_size = 64
-    learning_rate = 0.0001
+    learning_rate = 0.003
     momentum = 0.9
     weight_decay = 1e-4
-    epochs = 10
+    epochs = 50
     loss_matrix = []
     acc_matrix = []
     data_root = "../Utils/cifar-10-batches-py"
@@ -79,7 +85,7 @@ def main ():
     # train_loader = CIFAR10()
     val_loader = CIFAR10(train=False, data_root=data_root, transform=trans.Resize(32)).set_attrs(batch_size=test_batch_size, shuffle=False)
 
-    model = Model ()
+    model = VGG_16()
     if optimizerID == 'adam':
         optimizer = nn.Adam(model.parameters(), learning_rate, weight_decay)
     elif optimizerID == 'SGD':
@@ -93,13 +99,13 @@ def main ():
     # jittor core var
     # np.save("./lm.npy", np.array(loss_matrix))
     # np.save("./am.npy", np.array(acc_matrix))
-    draw_error_bar(loss_matrix, 'epoch', 'loss', 'lr=' + learning_rate.__str__()
+    draw_error_bar(loss_matrix, 'epoch', 'loss', 'err ' + 'vgg' + 'lr=' + learning_rate.__str__()
                    + " optimizer=" + optimizerID + " epochs=" + epochs.__str__()
                    + "train_batch_size" + train_batch_size.__str__()
                    + "test_batch_size" + test_batch_size.__str__()
                    # + "conv 64/128"
                    , save_dir=plt_path)
-    draw_error_bar(acc_matrix, 'epoch', 'acc', 'lr=' + learning_rate.__str__()
+    draw_error_bar(acc_matrix, 'epoch', 'acc', 'acc ' + 'vgg' + 'lr=' + learning_rate.__str__()
                    + " optimizer=" + optimizerID + " epochs=" + epochs.__str__()
                    + "train_batch_size" + train_batch_size.__str__()
                    + "test_batch_size" + test_batch_size.__str__()

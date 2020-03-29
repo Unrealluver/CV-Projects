@@ -34,7 +34,7 @@ def draw_error_bar(X, x_label, y_label, title, type='std',
     plt.ylabel(y_label)
     plt.xlabel(x_label)
     plt.title(title)
-    plt.show()
     plt.savefig((save_dir + title + ".png"), bbox_inches="tight")
+    plt.show()
 
 # draw_error_bar(np.array([[1,2,3], [2,3,4], [3,4,50]]), 'x', 'y', 'conf')
