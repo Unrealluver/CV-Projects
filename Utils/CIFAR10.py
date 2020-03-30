@@ -8,15 +8,13 @@
 # ***************************************************************
 
 import numpy as np
-import gzip
 from PIL import Image
 # our lib jittor import
 from jittor.dataset.dataset import Dataset
 # from jittor.dataset.utils import ensure_dir, download_url_to_local
-import jittor as jt
 import jittor.transform as trans
 import DataExtractor
-import matplotlib.pyplot as plt
+
 
 class CIFAR10(Dataset):
     def __init__(self, data_root, train=True ,download=True, transform=None):

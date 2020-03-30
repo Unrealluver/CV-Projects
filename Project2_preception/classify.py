@@ -1,11 +1,7 @@
 # %%
 
 from __future__ import print_function
-import random
-import numpy as np
-import matplotlib.pyplot as plt
 from softmax import *
-from DataExtractor import *
 from hog import *
 
 # %%

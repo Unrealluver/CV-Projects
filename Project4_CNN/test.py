@@ -11,6 +11,8 @@ from CIFAR10 import *
 from ErrorBarUtil import *
 from vgg_16 import VGG_16
 from vgg_11 import VGG_11
+from mini_vgg import MINI_VGG
+from cifar10_fast_model import CIFAR10_FAST_MODEL
 
 jt.flags.use_cuda = 0 # if jt.flags.use_cuda = 1 will use gpu
 
@@ -67,14 +69,15 @@ lr = 0.0001 adam epoch = 10 tbs256/64 -> 68.3% acc
 lr = 0.0001 adam epoch = 10 tbs256/64 vgg11 -> 58.9% acc
 lr = 0.0003 optimizer=adam epochs=10train_batch_size256test_batch_size64 vgg11 -> 68.9%
 lr = 0.0003 adam epoch = 10 tbs256/64 vgg16 -> 62.8%acc
+lr = 0.003 adam epoch = 10 tbs256/64 minivgg -> 66.6^
 '''
 def main ():
-    train_batch_size = 256
-    test_batch_size = 64
+    train_batch_size = 64
+    test_batch_size = 32
     learning_rate = 0.003
     momentum = 0.9
     weight_decay = 1e-4
-    epochs = 50
+    epochs = 10
     loss_matrix = []
     acc_matrix = []
     data_root = "../Utils/cifar-10-batches-py"
@@ -85,7 +88,7 @@ def main ():
     # train_loader = CIFAR10()
     val_loader = CIFAR10(train=False, data_root=data_root, transform=trans.Resize(32)).set_attrs(batch_size=test_batch_size, shuffle=False)
 
-    model = VGG_16()
+    model = CIFAR10_FAST_MODEL()
     if optimizerID == 'adam':
         optimizer = nn.Adam(model.parameters(), learning_rate, weight_decay)
     elif optimizerID == 'SGD':
@@ -99,16 +102,16 @@ def main ():
     # jittor core var
     # np.save("./lm.npy", np.array(loss_matrix))
     # np.save("./am.npy", np.array(acc_matrix))
-    draw_error_bar(loss_matrix, 'epoch', 'loss', 'err ' + 'vgg' + 'lr=' + learning_rate.__str__()
+    draw_error_bar(loss_matrix, 'mini 2bn' + 'epoch', 'loss', 'err ' + 'vgg' + 'lr=' + learning_rate.__str__()
                    + " optimizer=" + optimizerID + " epochs=" + epochs.__str__()
-                   + "train_batch_size" + train_batch_size.__str__()
-                   + "test_batch_size" + test_batch_size.__str__()
+                   + "tbs" + train_batch_size.__str__()
+                   + " " + test_batch_size.__str__()
                    # + "conv 64/128"
                    , save_dir=plt_path)
-    draw_error_bar(acc_matrix, 'epoch', 'acc', 'acc ' + 'vgg' + 'lr=' + learning_rate.__str__()
+    draw_error_bar(acc_matrix, 'mini 2bn ' + 'epoch', 'acc', 'acc ' + 'vgg' + 'lr=' + learning_rate.__str__()
                    + " optimizer=" + optimizerID + " epochs=" + epochs.__str__()
-                   + "train_batch_size" + train_batch_size.__str__()
-                   + "test_batch_size" + test_batch_size.__str__()
+                   + "tbs" + train_batch_size.__str__()
+                   + " " + test_batch_size.__str__()
                    # + "conv 64/128"
                    , save_dir=plt_path)
 

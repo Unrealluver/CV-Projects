@@ -1,6 +1,4 @@
-import numpy as np
-from sklearn import neighbors, datasets
-from DataExtractor import *
+from sklearn import neighbors
 from hog import *
 from time import *
 
