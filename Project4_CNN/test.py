@@ -77,7 +77,7 @@ def main ():
     learning_rate = 0.003
     momentum = 0.9
     weight_decay = 1e-4
-    epochs = 10
+    epochs = 15
     loss_matrix = []
     acc_matrix = []
     data_root = "../Utils/cifar-10-batches-py"
@@ -102,13 +102,13 @@ def main ():
     # jittor core var
     # np.save("./lm.npy", np.array(loss_matrix))
     # np.save("./am.npy", np.array(acc_matrix))
-    draw_error_bar(loss_matrix, 'mini 2bn' + 'epoch', 'loss', 'err ' + 'vgg' + 'lr=' + learning_rate.__str__()
+    draw_error_bar(loss_matrix, 'cifar' + 'epoch', 'loss', 'err ' + 'cifar ' + 'lr=' + learning_rate.__str__()
                    + " optimizer=" + optimizerID + " epochs=" + epochs.__str__()
                    + "tbs" + train_batch_size.__str__()
                    + " " + test_batch_size.__str__()
                    # + "conv 64/128"
                    , save_dir=plt_path)
-    draw_error_bar(acc_matrix, 'mini 2bn ' + 'epoch', 'acc', 'acc ' + 'vgg' + 'lr=' + learning_rate.__str__()
+    draw_error_bar(acc_matrix, 'cifar ' + 'epoch', 'acc', 'acc ' + 'cifar ' + 'lr=' + learning_rate.__str__()
                    + " optimizer=" + optimizerID + " epochs=" + epochs.__str__()
                    + "tbs" + train_batch_size.__str__()
                    + " " + test_batch_size.__str__()
